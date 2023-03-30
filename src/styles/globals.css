@@ -1,0 +1,10 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.noteContainer .options {
+  visibility: hidden;
+}
+.noteContainer:hover .options {
+  visibility: visible;
+}
