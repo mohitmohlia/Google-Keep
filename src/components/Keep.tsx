@@ -7,7 +7,8 @@ import SideBar from "./SideBar";
 
 const Keep = () => {
   const [searchText, setSearchText] = useState<string>("");
-  const { data: notes, refetch } = api.notes.getAll.useQuery();
+  const [isSideBarOpen, toggleSideBar] = useState<boolean>(true);
+  const { data: notes } = api.notes.getAll.useQuery();
 
   const filterData = notes?.filter(
     (note) =>
@@ -17,12 +18,17 @@ const Keep = () => {
 
   return (
     <>
-      <NavBar searchText={searchText} setSearchText={setSearchText} />
-      <div className="flex min-h-screen w-screen min-w-full">
-        <SideBar />
-        <div className="flex flex-[1.5] flex-col">
-          <AddNote refetch={refetch} />
-          <Notes data={filterData} refetch={refetch} />
+      <NavBar
+        toggleSideBar={toggleSideBar}
+        isSideBarOpen={isSideBarOpen}
+        searchText={searchText}
+        setSearchText={setSearchText}
+      />
+      <div className="flex min-h-screen w-screen min-w-full pt-20">
+        <SideBar isSideBarOpen={isSideBarOpen} />
+        <div className="flex flex-[1.5] flex-col overflow-y-auto">
+          <AddNote />
+          <Notes data={filterData} />
         </div>
       </div>
     </>

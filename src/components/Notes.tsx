@@ -1,26 +1,36 @@
 import { Notes } from "@prisma/client";
-import { useState } from "react";
+import React, { useState } from "react";
 import { api } from "~/utils/api";
+import NoteEditForm from "./EditNote";
+import Modal from "./Modal";
 
-const Notes = ({
-  data,
-  refetch,
-}: {
-  data: Notes[] | undefined;
-  refetch: () => Promise<undefined>;
-}) => {
+const Notes = ({ data }: { data: Notes[] | undefined }) => {
   const [openOptions, setOpenOptions] = useState<boolean>(false);
-  const { mutateAsync: destroy } = api.notes.destroy.useMutation();
-  const { mutateAsync: update } = api.notes.update.useMutation();
+  const [openModal, setOpenModal] = useState<boolean>(false);
+  const [note, setNote] = useState<Notes>();
+  const ctx = api.useContext();
+  const { mutate: destroy } = api.notes.destroy.useMutation({
+    onSuccess: () => ctx.notes.getAll.invalidate(),
+  });
+  const { mutate: update } = api.notes.update.useMutation({
+    onSuccess: () => ctx.notes.getAll.invalidate(),
+  });
 
-  const deleteNote = async (noteId: string) => {
-    await destroy({ id: noteId });
-    await refetch();
+  const deleteNote = (noteId: string) => {
+    destroy({ id: noteId });
   };
 
-  const pinNote = async (isPinned: boolean, noteId: string) => {
-    await update({ id: noteId, isPinned });
-    await refetch();
+  const handleSetOpenOptions = (e: React.SyntheticEvent) => {
+    e.stopPropagation();
+    setOpenOptions(!openOptions);
+  };
+  const pinNote = (isPinned: boolean, noteId: string) => {
+    update({ id: noteId, isPinned });
+  };
+  const handleModalOpen = (e: React.SyntheticEvent, note: Notes) => {
+    e.stopPropagation();
+    setNote(note);
+    setOpenModal(true);
   };
 
   const options = (noteId: string) => [
@@ -85,6 +95,7 @@ const Notes = ({
       ),
     },
   ];
+
   return (
     <>
       {data?.filter((note) => note.isPinned).length ? (
@@ -101,6 +112,7 @@ const Notes = ({
             .map((note) => {
               return (
                 <div
+                  onClick={(e) => handleModalOpen(e, note)}
                   key={note.id}
                   className={`row-[span_1_/_span_${
                     note.text.length % 10
@@ -158,6 +170,7 @@ const Notes = ({
             .map((note) => {
               return (
                 <div
+                  onClick={(e) => handleModalOpen(e, note)}
                   key={note.id}
                   className={`row-[span_1_/_span_${
                     note.text.length % 10
@@ -165,7 +178,7 @@ const Notes = ({
                 >
                   <div
                     className="options absolute top-2 right-2 rounded-full p-2 hover:bg-zinc-600 "
-                    onClick={() => setOpenOptions(!openOptions)}
+                    onClick={handleSetOpenOptions}
                   >
                     <div
                       className={`${
@@ -201,6 +214,16 @@ const Notes = ({
               );
             })}
       </div>
+      <Modal
+        show={openModal}
+        isEdit={true}
+        resource="Note"
+        onClose={() => setOpenModal(false)}
+      >
+        <div className="min-w-max- min-h-max border-t-2">
+          <NoteEditForm note={note} onSubmit={() => setOpenModal(false)} />
+        </div>
+      </Modal>
     </>
   );
 };

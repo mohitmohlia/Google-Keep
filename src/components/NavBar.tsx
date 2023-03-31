@@ -5,16 +5,23 @@ import Image from "next/image";
 const NavBar = ({
   searchText,
   setSearchText,
+  isSideBarOpen,
+  toggleSideBar,
 }: {
   searchText: string;
   setSearchText: Dispatch<string>;
+  isSideBarOpen: boolean;
+  toggleSideBar: Dispatch<boolean>;
 }) => {
   const { data: sessionData } = useSession();
 
   return (
-    <nav className="w-full border-b-2 border-zinc-600 bg-zinc-800">
-      <ul className="flex">
-        <li className="py-5 px-4 text-4xl text-zinc-100">
+    <nav className="navbar fixed z-10 w-screen  overflow-x-auto border-b-2 border-zinc-600 bg-zinc-800">
+      <ul className="flex items-center">
+        <li
+          className="ml-4 flex items-center justify-center rounded-full bg-zinc-700 p-4 text-4xl text-zinc-100"
+          onClick={() => toggleSideBar(!isSideBarOpen)}
+        >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             className="icon icon-tabler icon-tabler-menu-2"
@@ -33,17 +40,20 @@ const NavBar = ({
             <line x1="4" y1="18" x2="20" y2="18" />
           </svg>
         </li>
-        <li className=" flex flex-grow items-center py-4  px-2 text-4xl text-zinc-100">
-          <div className="px-2">
+        <li className=" flex flex-grow-[0.2] items-center  py-4 px-2 text-4xl text-zinc-100">
+          <div className="min-w-[5rem] px-2">
             <Image src={"/keep.png"} width={50} height={50} alt="keep logo" />
           </div>
           <span>Keep</span>
         </li>
-        <li className="flex flex-grow-[2] items-center justify-center">
-          <div className="flex h-14 w-full items-center rounded-lg bg-zinc-700">
+        <li className="flex flex-grow-[0.7] items-center justify-center">
+          <div
+            className="flex h-14 w-full
+           items-center rounded-lg bg-zinc-700"
+          >
             <svg
               xmlns="http://www.w3.org/2000/svg"
-              className="icon icon-tabler icon-tabler-search ml-4"
+              className="icon icon-tabler icon-tabler-search ml-4 min-w-max"
               width="36"
               height="36"
               viewBox="0 0 24 24"
@@ -86,15 +96,16 @@ const NavBar = ({
           </div>
         </li>
         <li className="flex flex-grow justify-center p-4">
-          <div className="flex flex-row">
+          <div className="flex flex-row gap-4">
             <Image
               src={sessionData?.user.image || ""}
               alt={sessionData?.user.name || "author"}
               height={50}
               width={50}
+              className="rounded-full"
             />
             <button
-              className="rounded-full bg-white/10 px-10 py-3 font-semibold text-white no-underline transition hover:bg-white/20"
+              className="rounded-full bg-white/10 px-4 py-2 font-semibold text-white no-underline transition hover:bg-white/20"
               onClick={() => void signOut()}
             >
               Sign Out

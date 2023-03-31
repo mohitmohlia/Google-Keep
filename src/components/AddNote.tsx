@@ -1,46 +1,68 @@
 import React, { useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
 
-const AddNote = ({ refetch }: { refetch: () => Promise<undefined> }) => {
-  const [text, setText] = useState<string>("");
-  const [title, setTitle] = useState<string>("");
-  const [isPinned, setIsPinned] = useState<boolean>(false);
-  const [isInputFocus, setInputFocus] = useState<boolean>(false);
-  const { mutateAsync } = api.notes.create.useMutation();
+const AddNote = () => {
+  const [text, setText] = useState("");
+  const [title, setTitle] = useState("");
+  const [isPinned, setIsPinned] = useState(false);
+  const [isInputFocus, setInputFocus] = useState(false);
+  const ctx = api.useContext();
+  const { mutate } = api.notes.create.useMutation({
+    onSuccess: () => {
+      cleanInput();
+      void ctx.notes.getAll.invalidate();
+    },
+  });
   const formRef = useRef<HTMLFormElement>(null);
 
-  async function handleSubmit(e: React.SyntheticEvent): Promise<void> {
+  function cleanInput() {
+    setInputFocus(false);
+    setTitle("");
+    setText("");
+  }
+  function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!text) {
       return;
     }
-    await mutateAsync({ text, title, isPinned });
-    setInputFocus(false);
-    setTitle("");
-    setText("");
-
-    await refetch();
+    mutate({ text, title, isPinned });
   }
+
   useEffect(() => {
-    function closeInputBox(event: React.MouseEvent) {
-      console.log(event.target);
-      if (formRef.current && !formRef.current.contains(event.target)) {
-        setInputFocus(false);
-        setIsPinned(false);
-        setText("");
-        setTitle("");
+    function removeInputFocus(e: KeyboardEvent) {
+      if (e.code === "Escape") {
+        cleanInput();
       }
-      return;
     }
-    window.addEventListener("click", closeInputBox);
-    return () => window.removeEventListener("click", closeInputBox);
-  }, [formRef]);
+    document.addEventListener("keydown", removeInputFocus);
+    return () => document.removeEventListener("keydown", removeInputFocus);
+  }, []);
+
+  useEffect(() => {
+    if (text) {
+      setInputFocus(true);
+    }
+  }, [text]);
+
+  // useEffect(() => {
+  //   function closeInputBox(event: React.MouseEvent) {
+  //     if (formRef.current && !formRef.current.contains(event.target)) {
+  //       setInputFocus(false);
+  //       setIsPinned(false);
+  //       setText("");
+  //       setTitle("");
+  //     }
+  //     return;
+  //   }
+  //   window.addEventListener("click", closeInputBox);
+  //   return () => window.removeEventListener("click", closeInputBox);
+  // }, [formRef]);
 
   return (
     <div className="flex justify-center">
       <form
         ref={formRef}
-        className=" relative m-12 w-2/4 rounded-lg border-2 border-zinc-500 p-2"
+        className="relative m-12 w-2/4 rounded-lg border-2 border-zinc-500 p-2"
         onSubmit={(e) => void handleSubmit(e)}
       >
         <div
@@ -119,11 +141,7 @@ const AddNote = ({ refetch }: { refetch: () => Promise<undefined> }) => {
           <button
             className="rounded-lg px-4 py-2 text-zinc-200 hover:bg-slate-200/20"
             type="button"
-            onClick={() => {
-              setInputFocus(false);
-              setText("");
-              setTitle("");
-            }}
+            onClick={cleanInput}
           >
             Close
           </button>

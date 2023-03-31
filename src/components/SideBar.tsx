@@ -1,7 +1,11 @@
-const SideBar = () => {
+const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
   return (
-    <div className="flex-[0.5]">
-      <div className="flex items-center p-4 text-2xl text-zinc-300">
+    <div className="w-min">
+      <div
+        className={`flex items-center ${
+          isSideBarOpen ? "rounded-r-full" : "rounded-full"
+        }  w-max min-w-full p-4 text-2xl text-zinc-300 hover:bg-zinc-300/30`}
+      >
         <div className="">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -19,9 +23,13 @@ const SideBar = () => {
             <line x1="9.7" y1="17" x2="14.3" y2="17" />
           </svg>
         </div>
-        <span className="p-4">Notes</span>
+        <span className={`${isSideBarOpen ? "" : "hidden"} px-8`}>Notes</span>
       </div>
-      <div className="flex items-center p-4 text-2xl text-zinc-300">
+      <div
+        className={`flex items-center ${
+          isSideBarOpen ? "rounded-r-full" : "rounded-full"
+        }  w-max min-w-full p-4 text-2xl text-zinc-300 hover:bg-zinc-300/30`}
+      >
         <div className="">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -39,9 +47,15 @@ const SideBar = () => {
             <path d="M4 7v3.859c0 .537 .213 1.052 .593 1.432l8.116 8.116a2.025 2.025 0 0 0 2.864 0l4.834 -4.834a2.025 2.025 0 0 0 0 -2.864l-8.117 -8.116a2.025 2.025 0 0 0 -1.431 -.593h-3.859a3 3 0 0 0 -3 3z" />
           </svg>
         </div>
-        <span className="p-4">Personal</span>
+        <span className={`${isSideBarOpen ? "" : "hidden"} px-8`}>
+          Personal
+        </span>
       </div>
-      <div className="flex items-center p-4 text-2xl text-zinc-300">
+      <div
+        className={`flex items-center ${
+          isSideBarOpen ? "rounded-r-full" : "rounded-full"
+        }  w-max min-w-full p-4 text-2xl text-zinc-300 hover:bg-zinc-300/30`}
+      >
         <div className="">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -59,9 +73,13 @@ const SideBar = () => {
             <path d="M4 7v3.859c0 .537 .213 1.052 .593 1.432l8.116 8.116a2.025 2.025 0 0 0 2.864 0l4.834 -4.834a2.025 2.025 0 0 0 0 -2.864l-8.117 -8.116a2.025 2.025 0 0 0 -1.431 -.593h-3.859a3 3 0 0 0 -3 3z" />
           </svg>
         </div>
-        <span className="p-4">Work</span>
+        <span className={`${isSideBarOpen ? "" : "hidden"} px-8`}>Work</span>
       </div>
-      <div className="flex items-center p-4 text-2xl text-zinc-300">
+      <div
+        className={`flex items-center ${
+          isSideBarOpen ? "rounded-r-full" : "rounded-full"
+        }  w-max min-w-full p-4 text-2xl text-zinc-300 hover:bg-zinc-300/30`}
+      >
         <div className="">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -79,9 +97,15 @@ const SideBar = () => {
             <path d="M4 7v3.859c0 .537 .213 1.052 .593 1.432l8.116 8.116a2.025 2.025 0 0 0 2.864 0l4.834 -4.834a2.025 2.025 0 0 0 0 -2.864l-8.117 -8.116a2.025 2.025 0 0 0 -1.431 -.593h-3.859a3 3 0 0 0 -3 3z" />
           </svg>
         </div>
-        <span className="p-4">Inspiration</span>
+        <span className={`${isSideBarOpen ? "" : "hidden"} px-8`}>
+          Inspiration
+        </span>
       </div>
-      <div className="flex items-center p-4 text-2xl text-zinc-300">
+      <div
+        className={`flex items-center ${
+          isSideBarOpen ? "rounded-r-full" : "rounded-full"
+        }  w-max min-w-full p-4 text-2xl text-zinc-300 hover:bg-zinc-300/30`}
+      >
         <div className="">
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -100,7 +124,7 @@ const SideBar = () => {
             <line x1="10" y1="12" x2="14" y2="12" />
           </svg>
         </div>
-        <span className="p-4">Archive</span>
+        <span className={`${isSideBarOpen ? "" : "hidden"} px-8`}>Archive</span>
       </div>
     </div>
   );
