@@ -1,14 +1,23 @@
+import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const notesRouter = createTRPCRouter({
-  getAll: protectedProcedure.query(({ ctx }) => {
-    return ctx.prisma.notes.findMany({
+  getAll: protectedProcedure.query(async ({ ctx }) => {
+    const notes = await ctx.prisma.notes.findMany({
       orderBy: {
         createdAt: "desc",
       },
     });
+    if (!notes) {
+      throw new TRPCError({
+        message: "Notes not found for the user",
+        code: "NOT_FOUND",
+      });
+    }
+    return notes;
   }),
+
   destroy: protectedProcedure
     .input(z.object({ id: z.string() }))
     .mutation((req) => {

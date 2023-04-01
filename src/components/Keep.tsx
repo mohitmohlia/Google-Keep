@@ -6,9 +6,13 @@ import Notes from "./Notes";
 import SideBar from "./SideBar";
 
 const Keep = () => {
-  const [searchText, setSearchText] = useState<string>("");
-  const [isSideBarOpen, toggleSideBar] = useState<boolean>(true);
+  const [searchText, setSearchText] = useState("");
+  const [isSideBarOpen, toggleSideBar] = useState(true);
   const { data: notes } = api.notes.getAll.useQuery();
+
+  if (!notes) {
+    return null;
+  }
 
   const filterData = notes?.filter(
     (note) =>
