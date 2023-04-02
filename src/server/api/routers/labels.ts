@@ -60,4 +60,21 @@ export const labelRouter = createTRPCRouter({
       }
       return label;
     }),
+  delete: protectedProcedure
+    .input(z.object({ id: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      const { prisma } = ctx;
+      const label = await prisma.labels.delete({
+        where: {
+          id: input.id,
+        },
+      });
+      if (!label) {
+        throw new TRPCError({
+          message: "Something went wrong",
+          code: "INTERNAL_SERVER_ERROR",
+        });
+      }
+      return label;
+    }),
 });

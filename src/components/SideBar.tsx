@@ -4,9 +4,9 @@ import { api } from "~/utils/api";
 import Modal from "./Modal";
 import Spinner from "./Spinner";
 
-interface labelsObjType {
-  [key: string]: string;
-}
+type labelsObjType = {
+  [key: string]: { name: string; isHovered: boolean };
+};
 type Label = RouterOutputs["labels"]["getAll"][number];
 
 const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
@@ -28,31 +28,55 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
     api.labels.update.useMutation({
       onSuccess: () => ctx.labels.getAll.invalidate(),
     });
+  const { mutate: deleteLabel, isLoading: isDeletingLabel } =
+    api.labels.delete.useMutation({
+      onSuccess: () => ctx.labels.getAll.invalidate(),
+    });
 
   useEffect(() => {
     if (labels) {
+      console.log("saving latest labels map", labels);
+
       const obj = labels.reduce(
-        (labels, label) => ({ ...labels, [label.id]: label.name }),
+        (labels: labelsObjType, label) => ({
+          ...labels,
+          [label.id]: {
+            ...labels[label.id],
+            name: label.name,
+            isHovered: false,
+          },
+        }),
         {}
       );
-
       setLabelsObj(obj);
     }
   }, [labels]);
 
-  const handleLabelEditChange = ({
-    event,
-    label,
-  }: {
-    event: React.SyntheticEvent;
-    label: Label;
-  }) => {
+  console.log("key value obj", labelsObj);
+
+  const handleLabelEditChange = (event: React.SyntheticEvent, label: Label) => {
     const newLabelName = (event.target as HTMLInputElement).value;
-    console.log(name);
-    const updatedObj = { ...labelsObj, [label.id]: newLabelName };
-    console.log(updatedObj);
+    const updatedObj: labelsObjType = {
+      ...labelsObj,
+      [label.id]: {
+        ...labelsObj[label.id],
+        name: newLabelName,
+      },
+    };
     setLabelsObj(updatedObj);
   };
+
+  const handleHover = (labelId: string, shouldHover: boolean) => {
+    const newObj: labelsObjType = {
+      ...labelsObj,
+      [labelId]: {
+        ...labelsObj[labelId],
+        isHovered: shouldHover,
+      },
+    };
+    setLabelsObj(newObj);
+  };
+
   if (!labels) {
     return <div />;
   }
@@ -224,39 +248,64 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
               <div
                 className="edit label m-2 flex items-center  p-4 text-zinc-200"
                 key={label.id}
+                onMouseEnter={() => handleHover(label.id, true)}
+                onMouseLeave={() => handleHover(label.id, false)}
               >
-                <div>
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="icon icon-tabler icon-tabler-pencil"
-                    width="40"
-                    height="40"
-                    viewBox="0 0 24 24"
-                    stroke-width="1.5"
-                    stroke="#ffffff"
-                    fill="none"
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                  >
-                    <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                    <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
-                    <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
-                  </svg>
+                <div onClick={() => deleteLabel({ id: label.id })}>
+                  {labelsObj[label.id]?.isHovered ? (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="icon icon-tabler icon-tabler-trash"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="#ffffff"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <line x1="4" y1="7" x2="20" y2="7" />
+                      <line x1="10" y1="11" x2="10" y2="17" />
+                      <line x1="14" y1="11" x2="14" y2="17" />
+                      <path d="M5 7l1 12a2 2 0 0 0 2 2h8a2 2 0 0 0 2 -2l1 -12" />
+                      <path d="M9 7v-3a1 1 0 0 1 1 -1h4a1 1 0 0 1 1 1v3" />
+                    </svg>
+                  ) : (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="icon icon-tabler icon-tabler-pencil"
+                      width="40"
+                      height="40"
+                      viewBox="0 0 24 24"
+                      stroke-width="1.5"
+                      stroke="#ffffff"
+                      fill="none"
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                    >
+                      <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                      <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
+                      <line x1="13.5" y1="6.5" x2="17.5" y2="10.5" />
+                    </svg>
+                  )}
                 </div>
                 <form>
                   <input
                     type="text"
                     className="bg-transparent px-2 text-2xl leading-5 placeholder:text-lg focus:outline-none"
                     placeholder="Edit label"
-                    onChange={(event) =>
-                      handleLabelEditChange({ event, label })
-                    }
-                    value={labelsObj[label.id]}
+                    onChange={(event) => handleLabelEditChange(event, label)}
+                    value={labelsObj[label.id]?.name}
                   />
                   <button
                     disabled={isEditingLabel || !labelsObj[label.id]}
                     onClick={() =>
-                      editLabel({ name: labelsObj[label.id], id: label.id })
+                      editLabel({
+                        name: labelsObj[label.id]?.name || "",
+                        id: label.id,
+                      })
                     }
                   >
                     <svg
