@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { RouterOutputs } from "~/utils/api";
 import { api } from "~/utils/api";
 import Modal from "./Modal";
@@ -11,6 +11,8 @@ type Label = RouterOutputs["labels"]["getAll"][number];
 
 const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
   const [showLabelModal, setShowLabelModal] = useState(false);
+  const [isCreateLabelFocus, setIsCreateLabelFocus] = useState(false);
+  const createRef = useRef(null);
   const [name, setName] = useState("");
   const [labelsObj, setLabelsObj] = useState<labelsObjType>({});
   const ctx = api.useContext();
@@ -30,13 +32,14 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
     });
   const { mutate: deleteLabel, isLoading: isDeletingLabel } =
     api.labels.delete.useMutation({
-      onSuccess: () => ctx.labels.getAll.invalidate(),
+      onSuccess: () => {
+        void ctx.labels.getAll.invalidate();
+        void ctx.notes.getAll.invalidate();
+      },
     });
 
   useEffect(() => {
     if (labels) {
-      console.log("saving latest labels map", labels);
-
       const obj = labels.reduce(
         (labels: labelsObjType, label) => ({
           ...labels,
@@ -52,8 +55,14 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
     }
   }, [labels]);
 
-  console.log("key value obj", labelsObj);
-
+  function handleCreateLabelFocus() {
+    if (isCreateLabelFocus) {
+      setIsCreateLabelFocus(false);
+    } else {
+      setIsCreateLabelFocus(true);
+      createRef.current.focus();
+    }
+  }
   const handleLabelEditChange = (event: React.SyntheticEvent, label: Label) => {
     const newLabelName = (event.target as HTMLInputElement).value;
     const updatedObj: labelsObjType = {
@@ -207,38 +216,76 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
       >
         <div className="min-w-max- min-h-max border-t-2">
           <div className="create label m-2 flex items-center p-4 text-zinc-200">
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                className="icon icon-tabler icon-tabler-plus"
-                width="40"
-                height="40"
-                viewBox="0 0 24 24"
-                stroke-width="1.5"
-                stroke="#ffffff"
-                fill="none"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              >
-                <path stroke="none" d="M0 0h24v24H0z" fill="none" />
-                <line x1="12" y1="5" x2="12" y2="19" />
-                <line x1="5" y1="12" x2="19" y2="12" />
-              </svg>
+            <div onClick={handleCreateLabelFocus}>
+              {isCreateLabelFocus ? (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon icon-tabler icon-tabler-x"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="#ffffff"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <line x1="18" y1="6" x2="6" y2="18" />
+                  <line x1="6" y1="6" x2="18" y2="18" />
+                </svg>
+              ) : (
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="icon icon-tabler icon-tabler-plus"
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="#ffffff"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+              )}
             </div>
-            <form>
+            <form className="flex">
               <input
+                ref={createRef}
                 type="text"
                 className="bg-transparent px-2 text-2xl leading-5 placeholder:text-lg focus:outline-none"
                 placeholder="Create new label"
                 onChange={(e) => setName(e.target.value)}
                 value={name}
+                onFocus={() => setIsCreateLabelFocus(true)}
               />
               <button
+                className="h-10 w-10"
                 type="submit"
                 onClick={() => createLabel({ name })}
-                disabled={isCreatingLabel || !name}
+                disabled={isCreatingLabel || !name || !isCreateLabelFocus}
               >
-                Create
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className={`icon icon-tabler icon-tabler-check ${
+                    isCreateLabelFocus ? "" : "hidden"
+                  }`}
+                  width="40"
+                  height="40"
+                  viewBox="0 0 24 24"
+                  stroke-width="1.5"
+                  stroke="#ffffff"
+                  fill="none"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <path stroke="none" d="M0 0h24v24H0z" fill="none" />
+                  <path d="M5 12l5 5l10 -10" />
+                </svg>
               </button>
             </form>
             <div />
@@ -291,7 +338,7 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
                     </svg>
                   )}
                 </div>
-                <form>
+                <form className="flex">
                   <input
                     type="text"
                     className="bg-transparent px-2 text-2xl leading-5 placeholder:text-lg focus:outline-none"
@@ -328,6 +375,11 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
               </div>
             );
           })}
+          <div className="m-2 flex justify-end border-t-2">
+            <button className="flex rounded-lg px-4 py-3 text-lg text-zinc-100 hover:bg-zinc-700">
+              Close
+            </button>
+          </div>
         </div>
       </Modal>
     </div>

@@ -151,6 +151,18 @@ const Notes = ({ data }: { data: Notes }) => {
 
                 <div className="p-1 text-lg font-semibold">{note.title}</div>
                 <div className="text-md p-1">{note.text}</div>
+                <div className=" label container mt-4">
+                  {note.label.map((element) => {
+                    return (
+                      <span
+                        key={element.id}
+                        className="m-1 rounded-full border-2 px-2 py-1 text-sm"
+                      >
+                        {element.name} {` `}
+                      </span>
+                    );
+                  })}
+                </div>
               </div>
             );
           })}

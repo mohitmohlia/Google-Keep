@@ -1,33 +1,65 @@
 import React, { useEffect, useRef, useState } from "react";
 import { api } from "~/utils/api";
+import type { RouterOutputs } from "~/utils/api";
+
+type Label = RouterOutputs["labels"]["getAll"];
 
 const AddNote = () => {
   const [text, setText] = useState("");
   const [title, setTitle] = useState("");
   const [isPinned, setIsPinned] = useState(false);
   const [isInputFocus, setInputFocus] = useState(false);
+  const [labelOptionVisible, setlabelOptionsVisible] = useState(false);
+
+  const [labelOptions, setLabelOptions] = useState<Label>([]);
+  const [selectedLabels, setSelectedLabels] = useState<string[]>([]);
   const ctx = api.useContext();
-  const { mutate } = api.notes.create.useMutation({
+
+  const { mutate: createNote } = api.notes.create.useMutation({
     onSuccess: () => {
       cleanInput();
       void ctx.notes.getAll.invalidate();
     },
   });
+  const { data: labels } = api.labels.getAll.useQuery();
+
+  useEffect(() => {
+    if (labels) {
+      setLabelOptions(labels);
+    }
+  }, [labels]);
   const formRef = useRef<HTMLFormElement>(null);
 
   function cleanInput() {
     setInputFocus(false);
     setTitle("");
     setText("");
+    setSelectedLabels([]);
+    setlabelOptionsVisible(false);
   }
   function handleSubmit(e: React.SyntheticEvent) {
     e.preventDefault();
     if (!text) {
       return;
     }
-    mutate({ text, title, isPinned });
+    createNote({
+      text,
+      title,
+      isPinned,
+      labels: selectedLabels,
+    });
   }
 
+  function handleLabelOptionChange(labelId: string) {
+    if (selectedLabels.includes(labelId)) {
+      setSelectedLabels(selectedLabels.filter((o) => o !== labelId));
+    } else {
+      setSelectedLabels([...selectedLabels, labelId]);
+    }
+  }
+
+  const yo = labels?.filter((label) => selectedLabels.includes(label.id));
+  console.log(yo);
   useEffect(() => {
     function removeInputFocus(e: KeyboardEvent) {
       if (e.code === "Escape") {
@@ -124,20 +156,70 @@ const AddNote = () => {
           onFocus={() => setInputFocus(true)}
           value={text}
         />
+        <div className="flex">
+          {labels
+            ?.filter((label) => selectedLabels.includes(label.id))
+            .map((label) => {
+              return (
+                <span
+                  className="m-1 rounded-full border-2 p-2 text-sm text-zinc-100"
+                  key={label.id}
+                >
+                  {label.name}
+                </span>
+              );
+            })}
+        </div>
         <div
           className={`${
             isInputFocus ? "" : "hidden"
           } my-1 flex justify-between`}
         >
-          <button
-            disabled={!text}
-            className={`rounded-lg px-4 py-2 font-semibold text-zinc-200 no-underline transition ${
-              text ? "hover:bg-green-500/70" : "hover:bg-red-500/70"
-            }`}
-            type="submit"
-          >
-            Add Note
-          </button>
+          <div>
+            <button
+              disabled={!text}
+              className={`rounded-lg px-4 py-2 font-semibold text-zinc-200 no-underline transition ${
+                text ? "hover:bg-green-500/70" : "hover:bg-red-500/70"
+              }`}
+              type="submit"
+            >
+              Add Note
+            </button>
+            <button
+              className={`rounded-lg px-4 py-2 font-semibold text-zinc-200 no-underline transition hover:bg-zinc-600`}
+              type="button"
+              onClick={() => setlabelOptionsVisible(!labelOptionVisible)}
+            >
+              Add label
+              <div
+                className={`${
+                  labelOptionVisible ? "" : "hidden"
+                } absolute z-[2] mt-2 ml-2 rounded-lg bg-zinc-700/100 text-zinc-100 `}
+              >
+                <div
+                  className="flex flex-col justify-start  px-2 py-2"
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  {labelOptions.map((option) => (
+                    <label
+                      className="flex items-center justify-start p-2"
+                      key={option.id}
+                    >
+                      <input
+                        className="h-4 w-4 border-2 p-2 accent-zinc-500"
+                        type="checkbox"
+                        checked={selectedLabels.includes(option.id)}
+                        onChange={() => handleLabelOptionChange(option.id)}
+                        value={option.name}
+                        onClick={(e) => e.stopPropagation()}
+                      />
+                      <span className="pl-1"> {option.name}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            </button>
+          </div>
           <button
             className="rounded-lg px-4 py-2 text-zinc-200 hover:bg-slate-200/20"
             type="button"
