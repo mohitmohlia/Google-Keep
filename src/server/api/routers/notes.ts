@@ -9,7 +9,7 @@ export const notesRouter = createTRPCRouter({
         createdAt: "desc",
       },
       include: {
-        label: true,
+        labels: true,
       },
     });
     if (!notes) {
@@ -50,7 +50,7 @@ export const notesRouter = createTRPCRouter({
           text: input.text,
           title: input.title,
           isPinned: input.isPinned,
-          label: {
+          labels: {
             connect: input.labels?.map((label) => ({ id: label })),
           },
           user: {

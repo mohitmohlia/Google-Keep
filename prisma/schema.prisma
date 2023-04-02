@@ -84,7 +84,7 @@ model Notes {
     user      User     @relation(fields: [userId], references: [id])
     userId    String
     isPinned  Boolean  @default(false)
-    Labels    Labels[]
+    labels    Labels[]
 
     @@index([userId])
 }
