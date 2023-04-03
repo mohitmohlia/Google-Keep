@@ -168,11 +168,11 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
             width="40"
             height="40"
             viewBox="0 0 24 24"
-            stroke-width="1.5"
+            strokeWidth="1.5"
             stroke="#ffffff"
             fill="none"
-            stroke-linecap="round"
-            stroke-linejoin="round"
+            strokeLinecap="round"
+            strokeLinejoin="round"
           >
             <path stroke="none" d="M0 0h24v24H0z" fill="none" />
             <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -224,11 +224,11 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
                   width="40"
                   height="40"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="#ffffff"
                   fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <line x1="18" y1="6" x2="6" y2="18" />
@@ -241,11 +241,11 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
                   width="40"
                   height="40"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="#ffffff"
                   fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <line x1="12" y1="5" x2="12" y2="19" />
@@ -277,11 +277,11 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
                   width="40"
                   height="40"
                   viewBox="0 0 24 24"
-                  stroke-width="1.5"
+                  strokeWidth="1.5"
                   stroke="#ffffff"
                   fill="none"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
                 >
                   <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                   <path d="M5 12l5 5l10 -10" />
@@ -306,11 +306,11 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
                       width="40"
                       height="40"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke="#ffffff"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <line x1="4" y1="7" x2="20" y2="7" />
@@ -326,11 +326,11 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
                       width="40"
                       height="40"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke="#ffffff"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M4 20h4l10.5 -10.5a1.5 1.5 0 0 0 -4 -4l-10.5 10.5v4" />
@@ -361,11 +361,11 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
                       width="40"
                       height="40"
                       viewBox="0 0 24 24"
-                      stroke-width="1.5"
+                      strokeWidth="1.5"
                       stroke="#ffffff"
                       fill="none"
-                      stroke-linecap="round"
-                      stroke-linejoin="round"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
                     >
                       <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                       <path d="M5 12l5 5l10 -10" />
