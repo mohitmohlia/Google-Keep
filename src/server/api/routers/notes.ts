@@ -4,7 +4,11 @@ import { createTRPCRouter, protectedProcedure } from "~/server/api/trpc";
 
 export const notesRouter = createTRPCRouter({
   getAll: protectedProcedure.query(async ({ ctx }) => {
+    const { session } = ctx;
     const notes = await ctx.prisma.notes.findMany({
+      where: {
+        userId: session.user.id,
+      },
       orderBy: {
         createdAt: "desc",
       },
