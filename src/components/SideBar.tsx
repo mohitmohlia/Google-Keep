@@ -4,17 +4,17 @@ import { api } from "~/utils/api";
 import Modal from "./Modal";
 import Spinner from "./Spinner";
 
-type labelsObjType = {
-  [key: string]: { name: string; isHovered: boolean };
-};
+type labelsObjType = { [key: string]: { name?: string; isHovered?: boolean } };
 type Label = RouterOutputs["labels"]["getAll"][number];
 
 const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
   const [showLabelModal, setShowLabelModal] = useState(false);
   const [isCreateLabelFocus, setIsCreateLabelFocus] = useState(false);
-  const createRef = useRef(null);
+  const createRef = useRef<HTMLInputElement>(null);
   const [name, setName] = useState("");
-  const [labelsObj, setLabelsObj] = useState<labelsObjType>({});
+  const [labelsObj, setLabelsObj] = useState<labelsObjType>(
+    {} as labelsObjType
+  );
   const ctx = api.useContext();
 
   const { data: labels, isLoading: isLabelLoading } =
@@ -40,12 +40,12 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
 
   useEffect(() => {
     if (labels) {
-      const obj = labels.reduce(
+      const obj = labels.reduce<labelsObjType>(
         (labels: labelsObjType, label) => ({
           ...labels,
           [label.id]: {
             ...labels[label.id],
-            name: label.name,
+            name: label?.name,
             isHovered: false,
           },
         }),
@@ -60,12 +60,12 @@ const SideBar = ({ isSideBarOpen }: { isSideBarOpen: boolean }) => {
       setIsCreateLabelFocus(false);
     } else {
       setIsCreateLabelFocus(true);
-      createRef.current.focus();
+      createRef?.current?.focus();
     }
   }
   const handleLabelEditChange = (event: React.SyntheticEvent, label: Label) => {
     const newLabelName = (event.target as HTMLInputElement).value;
-    const updatedObj: labelsObjType = {
+    const updatedObj = {
       ...labelsObj,
       [label.id]: {
         ...labelsObj[label.id],

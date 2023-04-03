@@ -206,14 +206,17 @@ const AddNote = () => {
                       key={option.id}
                     >
                       <input
-                        className="h-4 w-4 border-2 p-2 accent-zinc-500"
+                        className="h-6 w-6 border-2 p-2  accent-zinc-500"
                         type="checkbox"
                         checked={selectedLabels.includes(option.id)}
                         onChange={() => handleLabelOptionChange(option.id)}
                         value={option.name}
                         onClick={(e) => e.stopPropagation()}
                       />
-                      <span className="pl-1"> {option.name}</span>
+                      <span className="pl-1 text-lg font-normal text-zinc-100">
+                        {" "}
+                        {option.name}
+                      </span>
                     </label>
                   ))}
                 </div>
