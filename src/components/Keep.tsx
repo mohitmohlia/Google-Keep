@@ -9,7 +9,6 @@ const Keep = () => {
   const [searchText, setSearchText] = useState("");
   const [isSideBarOpen, toggleSideBar] = useState(true);
   const { data: notes } = api.notes.getAll.useQuery();
-
   if (!notes) {
     return null;
   }

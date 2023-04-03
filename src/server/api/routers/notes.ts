@@ -8,6 +8,9 @@ export const notesRouter = createTRPCRouter({
       orderBy: {
         createdAt: "desc",
       },
+      include: {
+        labels: true,
+      },
     });
     if (!notes) {
       throw new TRPCError({
@@ -36,6 +39,7 @@ export const notesRouter = createTRPCRouter({
         text: z.string().min(1),
         title: z.string(),
         isPinned: z.boolean(),
+        labels: z.array(z.string()).optional(),
       })
     )
     .mutation((req) => {
@@ -46,6 +50,9 @@ export const notesRouter = createTRPCRouter({
           text: input.text,
           title: input.title,
           isPinned: input.isPinned,
+          labels: {
+            connect: input.labels?.map((label) => ({ id: label })),
+          },
           user: {
             connect: {
               id: session.user.id,
@@ -75,32 +82,4 @@ export const notesRouter = createTRPCRouter({
       });
       return note;
     }),
-  //   create: protectedProcedure
-  //     .input(z.object({ text: z.string() }))
-  //     .mutation(({ ctx, input }) => {
-  //       const { prisma, session } = ctx;
-  //       const { text } = input;
-  //       const userId = session.user.id;
-  //       return prisma.notes.create({
-  //         data: {
-  //           text,
-  //           user: {
-  //             connect: {
-  //               id: userId,
-  //             },
-  //           },
-  //         },
-  //       });
-  //     }),
-  //   getAllNotes: protectedProcedure.query(async ({ ctx, input }) => {
-  //     console.log(ctx, input);
-  //     const { prisma, session } = ctx;
-  //     const notes = await prisma.notes.findMany({
-  //       where: {
-  //         id: session.user.id,
-  //       },
-  //     });
-  //     console.log("BE", notes);
-  //     return notes;
-  //   }),
 });
