@@ -1,28 +1,22 @@
-# Create T3 App
+# Google Keep Clone
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+This project is for learning purpose using the cutting edge technologies like [T3 Stack](https://create.t3.gg/)
+Anyone is welcome to raise issues and improve the code base. For those who wants to try Typescript, NextJs, Prisma, NextAuth can start by contributing to the project. See contribution guidelines.
 
-## What's next? How do I make an app with this?
+# Local Setup
 
-We try to keep this project as simple as possible, so you can start with just the scaffolding we set up for you, and add additional things later when they become necessary.
+Fork the repository and create a new file as .env taking reference from .example.env
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs. If you still are in the wind, please join our [Discord](https://t3.gg/discord) and ask for help.
+Paste your Postgres DATABASE_URL, GITHUB_ID and GITHUB_SECRET.
+No need to change the NEXTAUTH_URL as it already points to your localhost:3000 , However if your 3000 port is busy then update the port number of NEXTAUTH_URL as well.
 
-- [Next.js](https://nextjs.org)
-- [NextAuth.js](https://next-auth.js.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+Finally run the following commands
+`npm install`
+`npm run start`
+This should start the server.
 
-## Learn More
+Enjoy Developing and learning.
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+# Contribution Guidelines
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
-
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
-
-## How do I deploy this?
-
-Follow our deployment guides for [Vercel](https://create.t3.gg/en/deployment/vercel), [Netlify](https://create.t3.gg/en/deployment/netlify) and [Docker](https://create.t3.gg/en/deployment/docker) for more information.
+You can contribute to the project by forking this repository in your machine running the setup process explained above. Raise a PR to fix/improve the codebas. Respect other people's time and behave politely with the other community members.
