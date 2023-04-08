@@ -4,10 +4,10 @@ import { useSession } from "next-auth/react";
 
 import Keep from "~/components/Keep";
 import Login from "~/components/Login";
+import Spinner from "~/components/Spinner";
 
 const Home: NextPage = () => {
-  const { data: sessionData } = useSession();
-
+  const { status } = useSession();
   return (
     <>
       <Head>
@@ -16,7 +16,15 @@ const Home: NextPage = () => {
         <link rel="icon" href="/keep.png" />
       </Head>
       <main className="flex min-h-screen flex-col items-center bg-zinc-800">
-        {sessionData ? <Keep /> : <Login />}
+        {status === "loading" ? (
+          <div className="flex min-h-screen items-center justify-center">
+            <Spinner size={60} />
+          </div>
+        ) : status === "authenticated" ? (
+          <Keep />
+        ) : (
+          <Login />
+        )}
       </main>
     </>
   );

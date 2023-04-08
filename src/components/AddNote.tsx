@@ -58,8 +58,6 @@ const AddNote = () => {
     }
   }
 
-  const yo = labels?.filter((label) => selectedLabels.includes(label.id));
-  console.log(yo);
   useEffect(() => {
     function removeInputFocus(e: KeyboardEvent) {
       if (e.code === "Escape") {

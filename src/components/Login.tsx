@@ -4,7 +4,7 @@ export default function Login() {
   return (
     <div className="min-h-screen w-screen min-w-full">
       <div className="flex items-center justify-center text-zinc-50">
-        <div className="flex h-screen flex-1 flex-col items-center justify-center">
+        <div className="flex h-screen flex-1 flex-col items-center justify-center bg-yellow-500">
           <h1 className="text-3xl">Your Place to keep notes</h1>
           <h2>Login via github.com</h2>
         </div>
