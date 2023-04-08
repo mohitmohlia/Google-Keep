@@ -1,11 +1,9 @@
-const Spinner = ({ size = 30 }: { size?: number }) => {
+export default Spinner = () => {
   return (
     <div role="status">
       <svg
         aria-hidden="true"
-        className="mr-2 inline animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600"
-        width={size}
-        height={size}
+        class="mr-2 inline h-8 w-8 animate-spin fill-gray-600 text-gray-200 dark:fill-gray-300 dark:text-gray-600"
         viewBox="0 0 100 101"
         fill="none"
         xmlns="http://www.w3.org/2000/svg"
@@ -19,9 +17,7 @@ const Spinner = ({ size = 30 }: { size?: number }) => {
           fill="currentFill"
         />
       </svg>
-      <span className="sr-only">Loading...</span>
+      <span class="sr-only">Loading...</span>
     </div>
   );
 };
-
-export default Spinner;
